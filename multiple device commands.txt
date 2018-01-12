@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+from netmiko import ConnectHandler
+
+for n in range (1, 5):
+    ip_add = '192.168.66.15' + str(n)
+    devices = {
+        'device_type':'cisco_ios',
+        'ip':ip_add,
+        'username':'Cisco',
+        'password':'Cisco',
+    }
+    ssh = ConnectHandler(**devices)
+    print 'connecting to device ' + ip_add
+    ssh.send_command_timing("conf t")
+    ssh.send_command_timing("username test password test")
+    ssh.disconnect()
+		

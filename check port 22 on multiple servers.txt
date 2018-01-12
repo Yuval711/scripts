@@ -1,0 +1,19 @@
+#!/home/GSI_ynahoom/Yuval/bin/python2.7
+
+import socket
+
+with open('fw-ip') as f:
+    fwip = f.read().splitlines()
+
+port = 22
+
+for i in fwip:
+    host = i
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.settimeout(2)
+        s.connect((host, port))
+        s.close()
+        print 'connection to ' + host + ' on port 22 is succesful'
+    except:
+        print 'Connection to ' + host + ' on port 22 is unssuscesful'

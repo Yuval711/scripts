@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+from netmiko import ConnectHandler
+import time
+
+device = {
+    'device_type':'cisco_asa',
+    'username':'backup',
+    'password':'backup',
+    'ip':'192.168.66.1',
+    }
+
+time_stamp = time.strftime("%F")
+
+ssh = ConnectHandler(**device)
+ssh.send_command_timing('copy run ftp://CSC_BU:CSC_BU@192.168.66.5/ESXTEST/fw.cfg_' + time_stamp)
+ssh.send_command_timing('')
+ssh.send_command_timing('')
+ssh.send_command_timing('')
+ssh.send_command_timing('')
+ssh.disconnect()
+yuval@UV-Ubuntu:~/scripts$ 

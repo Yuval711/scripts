@@ -1,0 +1,349 @@
+
+In order to debug effectively, you need to be able to:
+
+1. Extract information from your system. This information can be messages printed to standard output, logging messages, stack traces, or analysis through using a debugger.
+
+2. Make changes to your program and see how it affects the information extracted in step1.
+
+3. Build a quick feedback cycle where you repeat (step1, step2, and the execution of your program). In general, the shorter the feedback loop (less time), the more effective you will be at solving your debugging problem. For example, if it takes you five minutes to extract information after a code change, it will take you much longer to solve a problem than if it takes you a few seconds. 
+
+
+
+Given all of this, how can we use Python's debugger (pdb) to help us troubleshoot problems more effectively?
+
+
+Let's start out with this small Netmiko program: 
+
+#!/usr/bin/env python
+from netmiko import ConnectHandler
+from getpass import getpass
+
+device = {
+    'device_type': 'cisco_ios',
+    'host': 'cisco1.domain.com',
+    'username': 'admin',
+    'password': getpass(),
+} 
+
+net_connect = ConnectHandler(**device)
+print(net_connect.find_prompt())
+
+output = net_connect.send_command("show ip int brief")
+for line in output.splitlines():
+    print(line)
+
+net_connect.disconnect()
+
+
+Firstly we can execute this Python script using the debugger: 
+
+$ python -m pdb cisco_simple.py 
+> /home/gituser/EP/cisco_simple.py(2)<module>()
+-> from netmiko import ConnectHandler
+(Pdb) 
+
+This will start the debugger at the first line of the program. Pdb's output will tell us which line it will execute next.
+
+You can then use the 'list .' command to list the lines of the script. 
+
+(Pdb) list .
+  1      #!/usr/bin/env python
+  2  ->  from netmiko import ConnectHandler
+  3      from getpass import getpass
+  4      
+  5      device = {
+  6          'device_type': 'cisco_ios',
+  7          'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+
+The arrow ('->') indicates the line that will be executed next. The list command can also be abbreviated as 'l'.
+
+You can also list the code between any two line numbers: 
+
+(Pdb) list 1, 20
+  1      #!/usr/bin/env python
+  2  ->  from netmiko import ConnectHandler
+  3      from getpass import getpass
+  4      
+  5      device = {
+  6          'device_type': 'cisco_ios',
+  7          'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+ 12      net_connect = ConnectHandler(**device)
+ 13      print(net_connect.find_prompt())
+ 14      
+ 15      output = net_connect.send_command("show ip int brief")
+ 16      for line in output.splitlines():
+ 17          print(line)
+ 18      
+ 19      net_connect.disconnect()
+[EOF]
+
+
+We can start stepping through this program by typing the 'next' command. Note, there is also a 'step' command and I will explain the difference between the two shortly. 
+
+(Pdb) next
+> /home/gituser/EP/cisco_simple.py(3)<module>()
+-> from getpass import getpass
+
+(Pdb) next
+> /home/gituser/EP/cisco_simple.py(6)<module>()
+-> 'device_type': 'cisco_ios',
+
+(Pdb) next
+> /home/gituser/EP/cisco_simple.py(7)<module>()
+-> 'host': 'cisco1.twb-tech.com',
+
+(Pdb) list .
+  2      from netmiko import ConnectHandler
+  3      from getpass import getpass
+  4      
+  5      device = {
+  6          'device_type': 'cisco_ios',
+  7  ->      'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+ 12      net_connect = ConnectHandler(**device)
+(Pdb) 
+
+We continue walking through this program until we get to the ConnectHandler() call on line 12. This is where Netmiko establishes the SSH connection. You can also abbreviate the next command using 'n'.
+
+Now at this point, if we type 'next', the program will go onto line 13 and the ConnectHandler call will happen behind the scenes. If, instead, we want to descend into the Netmiko ConnectHandler code, then we can type 'step'.
+
+You can see below that we are now inside the Netmiko ConnectHandler code: 
+
+> /home/gituser/EP/cisco_simple.py(12)<module>()
+-> net_connect = ConnectHandler(**device)
+
+(Pdb) step
+--Call--
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(125)ConnectHandler()
+-> def ConnectHandler(*args, **kwargs):
+
+(Pdb) list .
+120      platforms_base.sort()
+121      platforms_str = u"\n".join(platforms_base)
+122      platforms_str = u"\n" + platforms_str
+123      
+124      
+125  ->  def ConnectHandler(*args, **kwargs):
+126          """Factory function selects the proper class and creates object based on device_type."""
+127          if kwargs['device_type'] not in platforms:
+128              raise ValueError('Unsupported device_type: '
+129                               'currently supported platforms are: {0}'.format(platforms_str))
+130          ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+
+So 'next' keeps executing the code, statement-by-statement in the current context, but doesn't descend into functions/methods. Step keeps executing statements ,one after the other, including descend into other functions and methods.
+
+Next I use 'step' (abbreviated 's') to continue stepping through the ConnectHandler function including stepping into another function (ssh_dispatcher) 
+
+(Pdb) s
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(127)ConnectHandler()
+-> if kwargs['device_type'] not in platforms:
+
+(Pdb) s
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(130)ConnectHandler()
+-> ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+
+(Pdb) s
+--Call--
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(134)ssh_dispatcher()
+-> def ssh_dispatcher(device_type):
+
+You can use the 'where' command to see where you are at in the code stack: 
+
+(Pdb) where
+  /usr/lib/python3.6/bdb.py(431)run()
+-> exec(cmd, globals, locals)
+  <string>(1)<module>()
+  /home/gituser/EP/cisco_simple.py(12)<module>()
+-> net_connect = ConnectHandler(**device)
+  /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(130)ConnectHandler()
+-> ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(134)ssh_dispatcher()
+-> def ssh_dispatcher(device_type):
+
+The above can be hard to decipher, but we are on line 12 of the 'cisco_simple.py' file (this was the original Python program that we executed). And then on line 130 of the ConnectHandler function inside of the ssh_dispatcher.py file. Finally, the ConnectHandler() function is calling the ssh_dispatcher() function and we are on line 134 there. 
+
+(Pdb) list .
+129                               'currently supported platforms are: {0}'.format(platforms_str))
+130          ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+131          return ConnectionClass(*args, **kwargs)
+132      
+133      
+134  ->  def ssh_dispatcher(device_type):
+135          """Select the class to be instantiated based on vendor/platform."""
+136          return CLASS_MAPPER[device_type]
+137      
+138      
+139      def redispatch(obj, device_type, session_prep=True):
+
+
+
+Another nice thing you can do in 'pdb' is move up and down the stack. For example, we can type 'up' to move back up to the ConnectHandler function. 
+
+(Pdb) up
+> /home/gituser/VENV/napalm_reun/local/lib/python3.6/site-packages/netmiko/ssh_dispatcher.py(130)ConnectHandler()
+-> ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+
+(Pdb) list .
+125      def ConnectHandler(*args, **kwargs):
+126          """Factory function selects the proper class and creates object based on device_type."""
+127          if kwargs['device_type'] not in platforms:
+128              raise ValueError('Unsupported device_type: '
+129                               'currently supported platforms are: {0}'.format(platforms_str))
+130  ->      ConnectionClass = ssh_dispatcher(kwargs['device_type'])
+131          return ConnectionClass(*args, **kwargs)
+132      
+133      
+134      def ssh_dispatcher(device_type):
+135          """Select the class to be instantiated based on vendor/platform."""
+
+And then 'up' again to move back up to the 'cisco_simple.py' file. 
+
+(Pdb) up
+> /home/gituser/EP/cisco_simple.py(12)<module>()
+-> net_connect = ConnectHandler(**device)
+
+(Pdb) list .
+  7          'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+ 12  ->  net_connect = ConnectHandler(**device)
+ 13      print(net_connect.find_prompt())
+ 14      
+ 15      output = net_connect.send_command("show ip int brief")
+ 16      for line in output.splitlines():
+ 17          print(line)
+
+Similarly, you can type 'down' to descend back down the stack.
+
+Now that we are back at the highest level ('cisco_simple.py'), we can continue typing 'next' to move along statement-by-statement in this module.
+
+
+
+Now let's completely 'quit' from pdb and re-execute our program. 
+
+(Pdb) quit
+
+$ python -m pdb cisco_simple.py 
+> /home/gituser/EP/cisco_simple.py(2)<module>()
+-> from netmiko import ConnectHandler
+
+(Pdb) list 1, 20
+  1      #!/usr/bin/env python
+  2  ->  from netmiko import ConnectHandler
+  3      from getpass import getpass
+  4      
+  5      device = {
+  6          'device_type': 'cisco_ios',
+  7          'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+ 12      net_connect = ConnectHandler(**device)
+ 13      print(net_connect.find_prompt())
+ 14      
+ 15      output = net_connect.send_command("show ip int brief")
+ 16      for line in output.splitlines():
+ 17          print(line)
+ 18      
+ 19      net_connect.disconnect()
+[EOF]
+
+
+Pdb also has a way that we can add breakpoints. For example, here we add a breakpoint on line 12 and again on line 15: 
+
+(Pdb) b 12
+Breakpoint 1 at /home/gituser/EP/cisco_simple.py:12
+(Pdb) b 15
+Breakpoint 2 at /home/gituser/EP/cisco_simple.py:15
+
+(Pdb) list 1, 20
+  1      #!/usr/bin/env python
+  2  ->  from netmiko import ConnectHandler
+  3      from getpass import getpass
+  4      
+  5      device = {
+  6          'device_type': 'cisco_ios',
+  7          'host': 'cisco1.twb-tech.com',
+  8          'username': 'pyclass',
+  9          'password': getpass(),
+ 10      }
+ 11      
+ 12 B    net_connect = ConnectHandler(**device)
+ 13      print(net_connect.find_prompt())
+ 14      
+ 15 B    output = net_connect.send_command("show ip int brief")
+ 16      for line in output.splitlines():
+ 17          print(line)
+ 18      
+ 19      net_connect.disconnect()
+[EOF]
+
+We can type 'continue' or 'c' to execute our code until we hit a breakpoint. Then we can type 'c' again to continue to the next breakpoint.
+
+
+We can also use the dir(), p, and pp commands to see which variables exist and to print ('p') and pretty print ('pp') them out. 
+
+(Pdb) dir()
+['ConnectHandler', '__builtins__', '__file__', '__name__', 'device', 'getpass', 'net_connect', 'output']
+
+(Pdb) pp device
+{'device_type': 'cisco_ios',
+ 'host': 'cisco1.twb-tech.com',
+ 'password': 'password',
+ 'username': 'pyclass'} 
+
+
+You can also execute arbitrary Python commands in the debugger by prefixing the command with an exclamation point. Here I execute the find_prompt() method on the Netmiko connection. 
+
+(Pdb) !net_connect.find_prompt()
+'pynet-rtr1#'
+Note, you can also use '!command' to modify variables in your program.
+
+Another useful pdb technique involves adding pdb.set_trace() statements to our program. We place these statements anywhere we want the program to stop. For example:
+
+output = net_connect.send_command("show ip int brief")
+import pdb 
+pdb.set_trace()
+for line in output.splitlines():
+    print(line)
+
+We could then just execute our program using Python and it will automatically stop at the pdb.set_trace() statement and drop us into the pdb debugger.
+
+$ python cisco_simple.py 
+Password: 
+pynet-rtr1#
+> /home/gituser/EP/cisco_simple.py(18)<module>()
+-> for line in output.splitlines():
+
+(Pdb) list .
+ 13      print(net_connect.find_prompt())
+ 14      
+ 15      output = net_connect.send_command("show ip int brief")
+ 16      import pdb
+ 17      pdb.set_trace()
+ 18  ->  for line in output.splitlines():
+ 19          print(line)
+ 20      
+ 21      net_connect.disconnect()
+[EOF]
+
+
+
+For additional reading on the Python debugger, see this article by Doug Hellman:
+
+https://pymotw.com/2/pdb/
+

@@ -1,0 +1,32 @@
+#!/usr/bin/password
+
+from netmiko import ConnectHandler
+
+with open('fw-ip') as f:
+    device = f.open().splitlines()
+
+with open('commands_2_send') as f:
+    command_list = f.open().splitlines()
+
+device = {'device_type':'cisco_asa', 'ip':device, 'username':'Yuval', 'password':'password'}
+
+    try:
+        ssh = ConnectHandler(**device)
+    except (AuthenticationException):
+        print 'Authentication Faliure for device: ' + ip
+        continue
+    except (NetmikoTimeoutException):
+        print 'Timeout for device: ' + ip
+        continue
+    except (EODError):
+        print 'End of file attempting to connect to device: ' + ip
+        continue
+    except (SSHException):
+        print 'ssh for device: ' + ip + 'check if SSH is enabled'
+        continue
+    except Exception as unknown_error:
+        print 'unknown error ' + unknown_error
+        continue
+
+    output = ssh.send_config_set(commmands_list)
+    print output
