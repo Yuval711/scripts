@@ -1,0 +1,42 @@
+#https://www.youtube.com/watch?v=wzrGwor2veQ
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+print (s)
+
+server = 'Yuval711.com' #or server = '192.168.66.15'
+port = 80
+
+server_ip = socket.gethostbyname(server)
+print(server_ip)
+
+request = "GET / HTTP/1.1\nHOST: "+server+"\n\n"
+
+s.connect((server,port))
+s.send(request.encode()) # encode is used for python 3
+results = s.recv(4096) # (4096) is the buffer size. you can use less (1024)
+
+print(results)
+
+=-=-=-=-=-=-==-=-=-=-=-=-==-=-=-=-=-=-==-=-=-=-=-=-==-=-=-=-=-=-==-=-=-=-=-=-=
+
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+print (s)
+
+server = '192.168.66.9'
+port = 80
+
+server_ip = socket.gethostbyname(server)
+print(server_ip)
+
+request = "GET / HTTP/1.1\nHOST: "+server+"\n\n"
+
+s.connect((server,port))
+s.send(request.encode())
+results = s.recv(4096)
+
+print(results)
