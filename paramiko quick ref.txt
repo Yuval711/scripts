@@ -1,0 +1,22 @@
+import paramiko
+ip = '10.100.101.16'
+username = 'yuval'
+password = 'R******6'
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect(ip, username=username, password=password)
+shell = ssh.invoke_shell()
+
+
+shell.recv(1000)
+shell.send_ready()
+print shell.recv(1000)
+
+===============================
+
+import paramiko
+ssh = paramiko.SSHClient()
+ssh.load_system_host_keys()
+ssh.connect('192.168.66.14', username='Username', password='Password')
+shell = ssh.invoke_shell()
+print shell.recv(1000)
