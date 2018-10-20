@@ -1,0 +1,28 @@
+import urllib.request
+import smtplib
+
+#get the IP address information
+pull=urllib.request.urlopen('http://ifconfig.io/ip').read().decode('utf-8').strip('\n')
+
+#document the current public ip address
+current_ip = 'xx.x.xxx.xx' #replace the the current IP address
+
+# set the e-mail
+def send_email():
+    s=smtplib.SMTP('smtp.gmail.com:587')
+    s.starttls()
+    s.login('gmail_username','gmail_password')
+    s.sendmail('gmail_username','target_email@gmail.com',msg)
+    s.quit()
+
+#compile the message you want to send
+msg = 'The public IP address at home has changed. The new one is ' + pull
+
+def main():
+    if current_ip == pull:
+        quit()
+    else:
+        send_email()
+
+
+main()
