@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+import urllib.request
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+#pull the IP address information from the internet
+pull=urllib.request.urlopen('http://ifconfig.io/ip').read().decode()
+#document the current public IP address here:
+current_ip = 'XX.XX.XXX.X'
+
+# set the e-mail to be sent
+def send_email():
+    msg=MIMEMultipart()
+    msg['From'] = 'user_name@gmail.com'
+    msg['To'] = 'user_name@yahoo.com'
+    msg['Subject'] = '!!! HOME IP ADDRESS CHANGE!!!'
+    msg.attach(MIMEText(msg_content))
+    email_send=msg.as_string()
+    s=smtplib.SMTP('smtp.gmail.com:587')
+    s.starttls()
+    s.login('user_name','--passwd--')
+    s.sendmail('user_name@gmail.com','user_name@gmail.com',email_send)
+    s.quit()
+
+#compile the message you want to send
+msg_content = 'The public IP address at home [' + current_ip + '] has changed. The new one is ' + pull
+
+#go to work
+def main():
+    if current_ip == pull:
+        quit()
+    else:
+        send_email()
+
+
+main()
+
+#set in crontab to check every hour
+# in cron tab e add: 0 * * * * /usr/local/sbin/public_ip_check
