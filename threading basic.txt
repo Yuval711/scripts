@@ -1,0 +1,38 @@
+import time
+
+dog_name = ['lucky','marco','plad']
+cat_name = ['carbon','cantor','lama']
+
+def dog(name):
+    for i in name:
+	    print ('the dog name is ' + i)
+	    time.sleep(2)
+
+def cat(name):
+	for i in name:
+		print ('the cat name is ' + i)
+		time.sleep(2)
+
+def main():
+	start = time.time()
+	dog(dog_name)
+	cat(cat_name)
+	print ('this job took ' + str(time.time() - start))
+
+====/ now lets import threading/====
+
+import threading
+
+
+# create threads
+t1 = threading.Thread(target=dog, args=(dog_name,))
+t2 = threading.Thread(target=cat, args=(cat_name,))
+
+#call a new function and execute the threads created above
+def main2():
+	start = time.time()
+	t1.start()
+	t2.start()
+	t1.join()
+	t2.join()
+	print ('this job took ' + str(time.time()- start))
