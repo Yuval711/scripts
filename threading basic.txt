@@ -19,7 +19,7 @@ def main():
 	cat(cat_name)
 	print ('this job took ' + str(time.time() - start))
 
-====/ now lets import threading/====
+#====/ now lets import threading/====
 
 import threading
 
