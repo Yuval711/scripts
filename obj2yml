@@ -1,0 +1,236 @@
+#!/usr/local/bin/python3
+
+import sys
+
+file = sys.argv[1]
+# open file with the object-group to be converted and read content
+with open(file, 'r') as f:
+    read = f.readlines()
+
+# give the new group a name to be used in the yaml file
+GN = input('what will be the object-group name? \n')
+
+# create the objects
+
+print('\n')
+print('====== Copy below to a YAML file =======')
+print('\n')
+print('objects:')
+print('  network-objects:')
+
+for line in read:
+    if 'host' in line:
+        print('    - name: host-' + line.split()[2])
+        print("      description: 'host object'")
+        print('      value: ' + line.split()[2])
+        print('      obj_type: HOST')
+for line in read:
+    if 'host' not in line:
+        if 'group' not in line:
+            if line.split()[2] == str('128.0.0.0'):
+                sbm = '/1'
+                sbm_name = '-1'
+            elif line.split()[2] == str('192.0.0.0'):
+                sbm = '/2'
+                sbm_name = '-2'
+            elif line.split()[2] == str('224.0.0.0'):
+                sbm = '/3'
+                sbm_name = '-3'
+            elif line.split()[2] == str('240.0.0.0'):
+                sbm = '/4'
+                sbm_name = '-4'
+            elif line.split()[2] == str('248.0.0.0'):
+                sbm = '/5'
+                sbm_name = '-5'
+            elif line.split()[2] == str('252.0.0.0'):
+                sbm = '/6'
+                sbm_name = '-6'
+            elif line.split()[2] == str('254.0.0.0'):
+                sbm = '/7'
+                sbm_name = '-7'
+            elif line.split()[2] == str('255.0.0.0'):
+                sbm = '/8'
+                sbm_name = '-8'
+            elif line.split()[2] == str('255.128.0.0'):
+                sbm = '/9'
+                sbm_name = '-9'
+            elif line.split()[2] == str('255.192.0.0'):
+                sbm = '/10'
+                sbm_name = '-10'
+            elif line.split()[2] == str('255.224.0.0'):
+                sbm = '/11'
+                sbm_name = '-11'
+            elif line.split()[2] == str('255.240.0.0'):
+                sbm = '/12'
+                sbm_name = '-12'
+            elif line.split()[2] == str('255.248.0.0'):
+                sbm = '/13'
+                sbm_name = '-13'
+            elif line.split()[2] == str('255.252.0.0'):
+                sbm = '/14'
+                sbm_name = '-14'
+            elif line.split()[2] == str('255.254.0.0'):
+                sbm = '/15'
+                sbm_name = '-15'
+            elif line.split()[2] == str('255.255.0.0'):
+                sbm = '/16'
+                sbm_name = '-16'
+            elif line.split()[2] == str('255.255.128.0'):
+                sbm = '/17'
+                sbm_name = '-17'
+            elif line.split()[2] == str('255.255.192.0'):
+                sbm = '/18'
+                sbm_name = '-18'
+            elif line.split()[2] == str('255.255.224.0'):
+                sbm = '/19'
+                sbm_name = '-19'
+            elif line.split()[2] == str('255.255.240.0'):
+                sbm = '/20'
+                sbm_name = '-20'
+            elif line.split()[2] == str('255.255.248.0'):
+                sbm = '/21'
+                sbm_name = '-21'
+            elif line.split()[2] == str('255.255.252.0'):
+                sbm = '/22'
+                sbm_name = '-22'
+            elif line.split()[2] == str('255.255.254.0'):
+                sbm = '/23'
+                sbm_name = '-23'
+            elif line.split()[2] == str('255.255.255.0'):
+                sbm = '/24'
+                sbm_name = '-24'
+            elif line.split()[2] == str('255.255.255.128'):
+                sbm = '/25'
+                sbm_name = '-25'
+            elif line.split()[2] == str('255.255.255.192'):
+                sbm = '/26'
+                sbm_name = '-26'
+            elif line.split()[2] == str('255.255.255.224'):
+                sbm = '/27'
+                sbm_name = '-27'
+            elif line.split()[2] == str('255.255.255.240'):
+                sbm = '/28'
+                sbm_name = '-28'
+            elif line.split()[2] == str('255.255.255.248'):
+                sbm = '/29'
+                sbm_name = '-29'
+            elif line.split()[2] == str('255.255.255.252'):
+                sbm = '/30'
+                sbm_name = '-30'
+            elif line.split()[2] == str('255.255.255.254'):
+                sbm = '/31'
+                sbm_name = '-31'
+            print ('    - name: network-'  + line.split()[1] + sbm_name)
+            print ("      description: 'network object'")
+            print ('      value: '  + line.split()[1] + sbm)
+            print ('      obj_type: NETWORK')
+#           print ('    - name: subnet-'  + line.split()[1])
+#           print ('	  value: '  + line.split()[1] + ' ' + line.split()[2])
+#            print ('	  obj_type: SUBNET')
+
+# create the group in the yaml file
+print(' ')
+print('network_groups:')
+print('  - name: ' + GN )
+print('     description:' + '\'\'')
+print('     network_objects:')
+for line in read:
+    if 'host' in line:
+        print('    - host-' + line.split()[2])
+for line in read:
+    if 'host' not in line:
+        if 'group' not in line:
+            if line.split()[2] == str('128.0.0.0'):
+                sbm = '/1'
+                sbm_name = '-1'
+            elif line.split()[2] == str('192.0.0.0'):
+                sbm = '/2'
+                sbm_name = '-2'
+            elif line.split()[2] == str('224.0.0.0'):
+                sbm = '/3'
+                sbm_name = '-3'
+            elif line.split()[2] == str('240.0.0.0'):
+                sbm = '/4'
+                sbm_name = '-4'
+            elif line.split()[2] == str('248.0.0.0'):
+                sbm = '/5'
+                sbm_name = '-5'
+            elif line.split()[2] == str('252.0.0.0'):
+                sbm = '/6'
+                sbm_name = '-6'
+            elif line.split()[2] == str('254.0.0.0'):
+                sbm = '/7'
+                sbm_name = '-7'
+            elif line.split()[2] == str('255.0.0.0'):
+                sbm = '/8'
+                sbm_name = '-8'
+            elif line.split()[2] == str('255.128.0.0'):
+                sbm = '/9'
+                sbm_name = '-9'
+            elif line.split()[2] == str('255.192.0.0'):
+                sbm = '/10'
+                sbm_name = '-10'
+            elif line.split()[2] == str('255.224.0.0'):
+                sbm = '/11'
+                sbm_name = '-11'
+            elif line.split()[2] == str('255.240.0.0'):
+                sbm = '/12'
+                sbm_name = '-12'
+            elif line.split()[2] == str('255.248.0.0'):
+                sbm = '/13'
+                sbm_name = '-13'
+            elif line.split()[2] == str('255.252.0.0'):
+                sbm = '/14'
+                sbm_name = '-14'
+            elif line.split()[2] == str('255.254.0.0'):
+                sbm = '/15'
+                sbm_name = '-15'
+            elif line.split()[2] == str('255.255.0.0'):
+                sbm = '/16'
+                sbm_name = '-16'
+            elif line.split()[2] == str('255.255.128.0'):
+                sbm = '/17'
+                sbm_name = '-17'
+            elif line.split()[2] == str('255.255.192.0'):
+                sbm = '/18'
+                sbm_name = '-18'
+            elif line.split()[2] == str('255.255.224.0'):
+                sbm = '/19'
+                sbm_name = '-19'
+            elif line.split()[2] == str('255.255.240.0'):
+                sbm = '/20'
+                sbm_name = '-20'
+            elif line.split()[2] == str('255.255.248.0'):
+                sbm = '/21'
+                sbm_name = '-21'
+            elif line.split()[2] == str('255.255.252.0'):
+                sbm = '/22'
+                sbm_name = '-22'
+            elif line.split()[2] == str('255.255.254.0'):
+                sbm = '/23'
+                sbm_name = '-23'
+            elif line.split()[2] == str('255.255.255.0'):
+                sbm = '/24'
+                sbm_name = '-24'
+            elif line.split()[2] == str('255.255.255.128'):
+                sbm = '/25'
+                sbm_name = '-25'
+            elif line.split()[2] == str('255.255.255.192'):
+                sbm = '/26'
+                sbm_name = '-26'
+            elif line.split()[2] == str('255.255.255.224'):
+                sbm = '/27'
+                sbm_name = '-27'
+            elif line.split()[2] == str('255.255.255.240'):
+                sbm = '/28'
+                sbm_name = '-28'
+            elif line.split()[2] == str('255.255.255.248'):
+                sbm = '/29'
+                sbm_name = '-29'
+            elif line.split()[2] == str('255.255.255.252'):
+                sbm = '/30'
+                sbm_name = '-30'
+            elif line.split()[2] == str('255.255.255.254'):
+                sbm = '/31'
+                sbm_name = '-31'
+            print ('    - network-'  + line.split()[1] + sbm_name)
