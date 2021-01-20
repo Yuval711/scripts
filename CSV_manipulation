@@ -1,0 +1,11 @@
+import csv
+
+first_nums = ('one','two','three')
+sec_nums = ('four','five','six')
+third_nums = ('seven','eight','nine')
+
+vals = (first_nums,sec_nums,third_nums)
+f = open('C:\\Users\\Yuval\\Desktop\\test.csv', 'w', newline='')
+
+write = csv.writer(f)
+write.writerows(vals)
