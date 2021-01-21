@@ -1,0 +1,10 @@
+import csv
+
+with open('C:\\Users\\Yuval\\Desktop\\test.csv', 'w', newline='') as file:
+    headerfield = ('First name','Last name','Address','State','Zip code')
+    user1 = ('Danny','Powel','677 Tore st.','CA','77876')
+    user2 = ('Rita','Bravor','10 mount ave','GA','33898')
+    user3 = ('james','Specal','455 Fort Grab ave','NY','56678')
+    data = (headerfield,user1,user2,user3)
+    add = csv.writer(file)
+    add.writerows(data)
