@@ -1,0 +1,47 @@
+#!/usr/local/bin/python3
+
+import sys, os
+
+home = os.path.expanduser('~')
+
+try:
+    file = sys.argv[1]
+except IndexError:
+    print('please specify file name and format as follows: \n prefix_convert <filea-name> <yaml/json>')
+    quit()
+
+with open(home + '/' + file) as f:
+    ip = f.read().splitlines()
+    name = ip
+
+#json output
+def json_out():
+    for i in ip:
+        if '/' in i:
+            name = i.replace('/', '_')
+        print('{' + '\n' + '  \"name\"' + ':' + ' \"NETWORK_' + name + '\"' + ',' + '\n' +
+               '  \"subType\"' + ':' + ' \"NETWORK\"' + ',' + '\n' +
+               '  \"value\"' + ':' + ' \"' + i + '\"' + ',' + '\n' +
+               '  \"type\"' + ':' + ' \"networkobject\"' + '\n' +
+               '  }')
+
+#Yaml output
+def yaml_out():
+    print('objects:' + '\n' + '  network_objects:')
+    for i in ip:
+        if '/' in i:
+            name = i.replace('/', '_')
+        print(' - name:' + 'NETWORK_' + name + '\n' +
+              '   obj_type: NETWORK' + '\n' +
+              '   value:' +  i)
+
+def main():
+    try:
+        if sys.argv[2] == 'yaml':
+            yaml_out()
+        elif sys.argv[2] == 'json':
+            json_out()
+    except IndexError:
+        print('please use either json or yaml format after the file name and try again')
+        quit()
+main()
