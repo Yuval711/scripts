@@ -1,0 +1,26 @@
+import csv
+
+with open('./csv_file','w', newline='') as csv_file:
+	header = ('first name','last name','profession','age')
+	rows_to_add = (header)
+	writer = csv.writer(csv_file)
+	writer.writerow(rows_to_add)
+
+with open('./csv_file','a') as csv_file:
+	user1 = ('yuval','nahoom','engineer','56')
+	rows_to_add = (user1)
+	writer = csv.writer(csv_file)
+	writer.writerow(rows_to_add)
+
+with open('./csv_file','a') as csv_file:
+	user2 = ('Jenny','kessel','lawyer','47')
+	rows_to_add = (user2)
+	writer = csv.writer(csv_file)
+	writer.writerow(rows_to_add)
+
+with open('./csv_file','a') as csv_file:
+	user3 = ('Kathy','Stein','Therpapist','66')
+	user4 = ('Brad','Patel','engineer','18')
+	rows_to_add = (user3,user4)
+	writer = csv.writer(csv_file)
+	writer.writerows(rows_to_add)
