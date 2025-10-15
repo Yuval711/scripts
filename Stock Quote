@@ -1,0 +1,19 @@
+#!/opt/homebrew/bin/python3
+
+import requests
+from bs4 import BeautifulSoup
+import lxml
+import sys
+
+for arg in sys.argv[1:]:
+    sym=arg
+
+url = "https://finance.yahoo.com/quote/" + sym
+ua = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:133.0) Gecko/20100101 Firefox/133.0'}
+
+call = requests.get(url, headers=ua)
+soup = BeautifulSoup(call.content,features='lxml')
+
+price = soup.find('span', {'data-testid': 'qsp-price'}).getText()
+
+print(price)
