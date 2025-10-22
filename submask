@@ -1,0 +1,139 @@
+#!/opt/homebrew/bin/python3
+
+def get_the_cidr():
+    inpt = input("what is the subnet mask or cidr notation?\n")
+    if inpt == '/0':
+        print('0.0.0.0')
+    elif inpt == '0.0.0.0':
+        print('/0')
+    elif inpt == '/1':
+        print('128.0.0.0')
+    elif inpt == '128.0.0.0':
+         print('/1')
+    elif inpt == '/2':
+        print('192.0.0.0')
+    elif inpt == '192.0.0.0':
+        print('/2')
+    elif inpt == '/3':
+        print('224.0.0.0')
+    elif inpt == '224.0.0.0':
+        print('/3')
+    elif inpt == '/4':
+        print('240.0.0.0')
+    elif inpt == '240.0.0.0':
+        print('/4')
+    elif inpt == '/5':
+        print('248.0.0.0')
+    elif inpt == '248.0.0.0':
+        print('/5')
+    elif inpt == '/6':
+        print('252.0.0.0')
+    elif inpt == '252.0.0.0':
+        print('/6')	
+    elif inpt == '/7':
+        print('254.0.0.0')
+    elif inpt == '254.0.0.0':
+        print('/7')
+    elif inpt == '/8':
+        print('255.0.0.0')
+    elif inpt == '255.0.0.0':
+        print('/8')
+    elif inpt == '/9':
+        print('255.128.0.0')
+    elif inpt == '255.128.0.0':
+        print('/9')
+    elif inpt == '/10':
+        print('255.192.0.0')
+    elif inpt == '255.192.0.0':
+        print('/10')
+    elif inpt == '/11':
+        print('255.224.0.0')
+    elif inpt == '255.224.0.0':
+        print('/11')
+    elif inpt == '/12':
+        print('255.240.0.0')
+    elif inpt == '255.240.0.0':
+        print('/12')
+    elif inpt == '/13':
+        print('255.248.0.0')
+    elif inpt == '255.248.0.0':
+        print('/13')
+    elif inpt == '/14':
+        print('255.252.0.0')
+    elif inpt == '255.252.0.0':
+        print('/14')
+    elif inpt == '/15':
+        print('255.254.0.0')
+    elif inpt == '255.254.0.0':
+        print('/15')
+    elif inpt == '/16':
+        print('255.255.0.0')
+    elif inpt == '255.255.0.0':
+        print('/16')
+    elif inpt == '/17':
+        print('255.255.128.0')
+    elif inpt == '255.255.128.0':
+        print('/17')
+    elif inpt == '/18':
+        print('255.255.192.0')
+    elif inpt == '255.255.192.0':
+        print('/18')
+    elif inpt == '/19':
+        print('255.255.224.0')
+    elif inpt == '255.255.224.0':
+        print('/19')
+    elif inpt == '/20':
+        print('255.255.240.0')
+    elif inpt == '255.255.240.0':
+        print('/20')
+    elif inpt == '/21':
+        print('255.255.248.0')
+    elif inpt == '255.255.248.0':
+        print('/21')
+    elif inpt == '/22':
+        print('255.255.252.0')
+    elif inpt == '255.255.252.0':
+        print('/22')
+    elif inpt == '/23':
+        print('255.255.254.0')
+    elif inpt == '255.255.254.0':
+        print('/23')
+    elif inpt == '/24':
+        print('255.255.255.0')
+    elif inpt == '255.255.255.0':
+        print('/24')
+    elif inpt == '/25':
+        print('255.255.255.128')
+    elif inpt == '255.255.255.128':
+        print('/25')
+    elif inpt == '/26':
+        print('255.255.255.192')
+    elif inpt == '255.255.255.192':
+        print('/26')
+    elif inpt == '/28':
+        print('255.255.255.240')
+    elif inpt == '255.255.255.240':
+        print('/28')
+    elif inpt == '/29':
+        print('255.255.255.248')
+    elif inpt == '255.255.255.248':
+        print('/29')
+    elif inpt == '/30':
+        print('255.255.255.252')
+    elif inpt == '255.255.255.252':
+        print('/30')
+    elif inpt == '/31':
+        print('255.255.255.254')
+    elif inpt == '255.255.255.254':
+        print('/31')
+    elif inpt == '/32':
+        print('host')
+    else:
+        print('''This is NOT a valid subnetmask.
+        	
+        Kindly type the cidr notation with a '/' and the range can be from /0 through /32
+        or
+        insert regular subnet mask with (.) seperated octates, such as xxx.xxx.xxx.xxx''')
+        get_the_cidr()
+
+get_the_cidr()
