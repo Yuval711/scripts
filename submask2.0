@@ -1,13 +1,16 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/python3
+
 import sys
 
 
 for arg in sys.argv[1:]:
     inpt = arg
+if len(sys.argv) < 2:
+    print('Kindly specify a value:')
+    inpt = input("what is the subnet mask or cidr notation?\n")
 
 
 def get_the_cidr():
-    # inpt = input("what is the subnet mask or cidr notation?\n")
 
     if inpt == '/0':
         print('0.0.0.0')
